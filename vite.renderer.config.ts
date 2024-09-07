@@ -1,3 +1,5 @@
+// eslint-disable-next-line import/no-unresolved
+import Unfonts from 'unplugin-fonts/vite'
 import type { ConfigEnv, UserConfig } from 'vite'
 import { defineConfig } from 'vite'
 
@@ -16,7 +18,14 @@ export default defineConfig((env) => {
     build: {
       outDir: `.vite/renderer/${name}`,
     },
-    plugins: [pluginExposeRenderer(name)],
+    plugins: [
+      pluginExposeRenderer(name),
+      Unfonts({
+        google: {
+          families: [{ name: 'Dongle' }],
+        },
+      }),
+    ],
     resolve: {
       preserveSymlinks: true,
     },

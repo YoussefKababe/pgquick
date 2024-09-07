@@ -1,9 +1,18 @@
+import { AppBar } from './AppBar'
+import { AppProvider } from './AppContext'
+import { DatabaseList } from './DatabaseList'
+import { StatusBar } from './StatusBar'
 import { TitleBar } from './TitleBar'
 
 export const App = () => {
   return (
-    <div className="flex h-screen w-full flex-col bg-black">
-      <TitleBar />
-    </div>
+    <AppProvider>
+      <>
+        <TitleBar />
+        <AppBar />
+        <DatabaseList />
+        <StatusBar />
+      </>
+    </AppProvider>
   )
 }

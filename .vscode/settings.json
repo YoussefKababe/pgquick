@@ -1,7 +1,7 @@
 {
   "editor.formatOnSave": true,
   "editor.wordWrap": "wordWrapColumn",
-  "editor.wordWrapColumn": 120,
+  "editor.wordWrapColumn": 80,
   "files.associations": {
     "*.css": "tailwindcss"
   },

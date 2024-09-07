@@ -1,5 +1,8 @@
-import { BrowserWindow, app } from 'electron'
+import { BrowserWindow, app, ipcMain } from 'electron'
 import path from 'path'
+
+import { createDatabase, getDatabases, removeDatabase } from './lib/db'
+import { restartServer, startServer, stopServer } from './lib/server'
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
@@ -9,19 +12,25 @@ if (require('electron-squirrel-startup')) {
 const createWindow = () => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    width: 400,
-    height: 500,
+    width: 360,
+    height: 508,
+    backgroundColor: '#000000',
+    resizable: false,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
+      devTools: !app.isPackaged,
     },
     titleBarStyle: 'hidden',
+    trafficLightPosition: { x: 12, y: 8 },
   })
 
   // and load the index.html of the app.
   if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
     mainWindow.loadURL(MAIN_WINDOW_VITE_DEV_SERVER_URL)
   } else {
-    mainWindow.loadFile(path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`))
+    mainWindow.loadFile(
+      path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`),
+    )
   }
 
   // Open the DevTools.
@@ -52,3 +61,10 @@ app.on('activate', () => {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and import them here.
+
+ipcMain.on('start-server', startServer)
+ipcMain.on('stop-server', stopServer)
+ipcMain.on('restart-server', restartServer)
+ipcMain.on('get-databases', getDatabases)
+ipcMain.handle('create-database', createDatabase)
+ipcMain.on('remove-database', removeDatabase)

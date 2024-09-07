@@ -38,6 +38,7 @@
     "tailwindcss": "^3.4.10",
     "ts-node": "^10.9.2",
     "typescript": "~4.5.4",
+    "unplugin-fonts": "^1.1.1",
     "vite": "^5.4.3"
   },
   "keywords": [],
@@ -47,8 +48,14 @@
   },
   "license": "MIT",
   "dependencies": {
+    "@electric-sql/pglite": "^0.2.5",
+    "@formkit/auto-animate": "^0.8.2",
+    "clsx": "^2.1.1",
     "electron-squirrel-startup": "^1.0.1",
+    "lucide-react": "^0.439.0",
+    "pg-gateway": "^0.3.0-alpha.6",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react-dom": "^18.3.1",
+    "tailwind-merge": "^2.5.2"
   }
 }
