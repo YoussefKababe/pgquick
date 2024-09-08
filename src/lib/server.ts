@@ -116,7 +116,7 @@ export const startServer = (event: IpcMainEvent) => {
     })
   })
 
-  server.listen(5432, () => {
+  server.listen(5432, '127.0.0.1', () => {
     console.info('Server listening on port 5432')
     event.sender.send('set-ready', true)
   })
