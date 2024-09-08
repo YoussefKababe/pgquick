@@ -1,4 +1,5 @@
 import { MakerDeb } from '@electron-forge/maker-deb'
+import { MakerDMG } from '@electron-forge/maker-dmg'
 import { MakerRpm } from '@electron-forge/maker-rpm'
 import { MakerSquirrel } from '@electron-forge/maker-squirrel'
 import { MakerZIP } from '@electron-forge/maker-zip'
@@ -12,12 +13,33 @@ const config: ForgeConfig = {
     asar: true,
     icon: './src/images/pgquick',
   },
+  publishers: [
+    {
+      name: '@electron-forge/publisher-github',
+      config: {
+        repository: {
+          owner: 'YoussefKababe',
+          name: 'pgquick',
+        },
+      },
+    },
+  ],
   rebuildConfig: {},
   makers: [
     new MakerSquirrel({}),
-    new MakerZIP({}, ['darwin']),
+    new MakerZIP({}, ['darwin', 'mas', 'win32', 'linux']),
     new MakerRpm({}),
-    new MakerDeb({}),
+    new MakerDeb({
+      options: {
+        maintainer: 'YoussefKababe',
+        homepage: 'https://github.com/YoussefKababe',
+        icon: './src/images/pgquick.png',
+      },
+    }),
+    new MakerDMG({
+      format: 'ULFO',
+      icon: './src/images/pgquick.icns',
+    }),
   ],
   plugins: [
     new VitePlugin({
