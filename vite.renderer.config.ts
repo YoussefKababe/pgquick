@@ -1,4 +1,3 @@
-// eslint-disable-next-line import/no-unresolved
 import Unfonts from 'unplugin-fonts/vite'
 import type { ConfigEnv, UserConfig } from 'vite'
 import { defineConfig } from 'vite'

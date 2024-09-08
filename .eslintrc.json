@@ -12,5 +12,10 @@
     "plugin:import/electron",
     "plugin:import/typescript"
   ],
+  "settings": {
+    "import/resolver": {
+      "typescript": {}
+    }
+  },
   "parser": "@typescript-eslint/parser"
 }

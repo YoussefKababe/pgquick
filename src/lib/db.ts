@@ -34,7 +34,7 @@ export const createDatabase = async (event: IpcMainEvent, name: string) => {
       IF NOT EXISTS (
           SELECT FROM pg_catalog.pg_roles WHERE rolname = 'pgquick'
       ) THEN
-          CREATE ROLE pgquick WITH LOGIN;
+          CREATE ROLE pgquick WITH LOGIN SUPERUSER;
       END IF;
     END $$;
   `)

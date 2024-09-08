@@ -1,7 +1,12 @@
 import type { ConfigEnv, UserConfig } from 'vite'
 import { defineConfig, mergeConfig } from 'vite'
 
-import { external, getBuildConfig, getBuildDefine, pluginHotRestart } from './vite.base.config'
+import {
+  external,
+  getBuildConfig,
+  getBuildDefine,
+  pluginHotRestart,
+} from './vite.base.config'
 
 // https://vitejs.dev/config
 export default defineConfig((env) => {
@@ -16,7 +21,8 @@ export default defineConfig((env) => {
         formats: ['cjs'],
       },
       rollupOptions: {
-        external,
+        external: (id) =>
+          id.startsWith('@electric-sql/pglite/') || external.includes(id),
       },
     },
     plugins: [pluginHotRestart('restart')],
