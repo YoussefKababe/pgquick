@@ -12,6 +12,9 @@ const config: ForgeConfig = {
   packagerConfig: {
     asar: true,
     icon: './src/images/pgquick',
+    osxSign: {
+      identity: 'Apple Development: Youssef Kababe (F6E9R5YWQ5)',
+    },
   },
   publishers: [
     {
