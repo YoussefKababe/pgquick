@@ -1,8 +1,8 @@
 {
   "name": "pgquick",
-  "productName": "pgquick",
-  "version": "1.0.0",
-  "description": "My Electron application description",
+  "productName": "PGQuick",
+  "version": "0.1.0",
+  "description": "Full-featured, lightweight Postgres databases for local development",
   "main": ".vite/build/main.js",
   "scripts": {
     "start": "electron-forge start",

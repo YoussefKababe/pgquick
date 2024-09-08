@@ -1,5 +1,5 @@
 import { useAutoAnimate } from '@formkit/auto-animate/react'
-import { Database, X } from 'lucide-react'
+import { Database, Trash2 } from 'lucide-react'
 import { useState } from 'react'
 
 import { useApp } from './AppContext'
@@ -41,7 +41,7 @@ export const DatabaseList = () => {
                   setLoading(false)
                 }}
               >
-                <X size={28} />
+                <Trash2 size={20} />
               </button>
             </div>
             <div className="flex flex-1 flex-col gap-1 p-2 px-3">
