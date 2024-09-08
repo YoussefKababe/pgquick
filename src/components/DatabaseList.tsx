@@ -12,8 +12,17 @@ export const DatabaseList = () => {
   return (
     <ul
       ref={listRef}
-      className="flex w-[calc(100%+30px)] flex-1 flex-col gap-3 overflow-y-auto p-3 pr-[42px]"
+      className="relative flex w-[calc(100%+30px)] flex-1 flex-col gap-3 overflow-y-auto p-3 pr-[42px]"
     >
+      {app.databases.length === 0 && (
+        <div className="absolute inset-0 right-[30px] flex flex-col items-center justify-center p-3 text-center">
+          <p className="mb-2 font-bold">No databases yet.</p>
+          <p className="text-sm text-white/80">
+            Click <span className="font-bold">Create</span> to add your first
+            one!
+          </p>
+        </div>
+      )}
       {app.databases
         .filter((db) => !app.search || db.includes(app.search))
         .map((db) => (
