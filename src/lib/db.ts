@@ -1,8 +1,9 @@
 import { PGlite } from '@electric-sql/pglite'
 import { IpcMainEvent, app } from 'electron'
-import { mkdir, readdir, rmdir } from 'node:fs/promises'
+import { mkdir, readdir, rm } from 'node:fs/promises'
 
 export let databases: string[] = []
+export const pglInstances: Record<string, PGlite> = {}
 
 export const getDatabases = async (event: IpcMainEvent) => {
   try {
@@ -51,7 +52,12 @@ export const createDatabase = async (event: IpcMainEvent, name: string) => {
 
 export const removeDatabase = async (event: IpcMainEvent, name: string) => {
   try {
-    await rmdir(`${app.getPath('userData')}/dbs/${name}`)
+    await pglInstances[name]?.close()
+    delete pglInstances[name]
+    await rm(`${app.getPath('userData')}/dbs/${name}`, {
+      recursive: true,
+      force: true,
+    })
   } catch (error) {
     /* empty */
   }

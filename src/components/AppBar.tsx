@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 import { useAppUpdate } from './AppContext'
 
@@ -6,10 +6,6 @@ export const AppBar = () => {
   const { setSearch } = useAppUpdate()
   const [loading, setLoading] = useState(false)
   const [dbName, setDbName] = useState('')
-
-  useEffect(() => {
-    setSearch(dbName)
-  }, [dbName])
 
   return (
     <div className="flex h-[70px] bg-blue-700 px-3 py-3">
@@ -19,20 +15,22 @@ export const AppBar = () => {
           e.preventDefault()
           setLoading(true)
           await window.electronAPI.createDatabase(dbName)
+          setDbName('')
           setTimeout(() => {
             setLoading(false)
-            setDbName('')
-          }, 1000)
+            setSearch('')
+          }, 500)
         }}
       >
         <input
-          className="flex-1 bg-transparent outline-none"
+          className="flex-1 bg-transparent text-sm outline-none"
           placeholder="Search / Name your new database"
           value={dbName}
           disabled={loading}
           onChange={(e) => {
             if (loading) return
             setDbName(e.target.value)
+            setSearch(e.target.value)
           }}
         />
         <button

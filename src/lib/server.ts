@@ -23,13 +23,12 @@ import { uuid_ossp } from '@electric-sql/pglite/contrib/uuid_ossp'
 import { vector } from '@electric-sql/pglite/vector'
 import { IpcMainEvent, app } from 'electron'
 import { Server, createServer } from 'node:net'
-import { PostgresConnection } from 'pg-gateway'
+import { PostgresConnection, PostgresConnectionOptions } from 'pg-gateway'
 
 import { PGLITE_VERSION, PG_VERSION } from '../constants'
-import { databases } from './db'
+import { databases, pglInstances } from './db'
 
 let server: Server | null = null
-const dbs: Record<string, PGlite> = {}
 
 export const startServer = (event: IpcMainEvent) => {
   if (server) {
@@ -38,20 +37,17 @@ export const startServer = (event: IpcMainEvent) => {
   }
 
   server = createServer((socket) => {
-    const connection = new PostgresConnection(socket, {
-      serverVersion: `${PG_VERSION} (PGlite ${PGLITE_VERSION})`,
-      auth: {
-        method: 'password',
-        validateCredentials: ({ username }) => username === 'pgquick',
-        getClearTextPassword: () => '',
-      },
-      onStartup: async ({ clientInfo }) => {
-        if (!clientInfo) return
+    const onStartup: PostgresConnectionOptions['onStartup'] = async ({
+      clientInfo,
+    }) => {
+      if (!clientInfo) return
 
-        const dbName = clientInfo.parameters['database']
-        if (!dbName || !databases.includes(dbName) || dbs[dbName]) return
+      const dbName = clientInfo.parameters['database']
+      if (!dbName || !databases.includes(dbName) || pglInstances[dbName]) return
 
-        dbs[dbName] = new PGlite(`${app.getPath('userData')}/dbs/${dbName}`, {
+      pglInstances[dbName] = new PGlite(
+        `${app.getPath('userData')}/dbs/${dbName}`,
+        {
           username: 'pgquick',
           database: dbName,
           extensions: {
@@ -78,19 +74,38 @@ export const startServer = (event: IpcMainEvent) => {
             uuid_ossp,
             vector,
           },
-        })
+        },
+      )
 
-        await dbs[dbName].waitReady
+      await pglInstances[dbName].waitReady
+    }
+
+    const connection = new PostgresConnection(socket, {
+      serverVersion: `${PG_VERSION} (PGlite ${PGLITE_VERSION})`,
+      auth: {
+        method: 'password',
+        validateCredentials: ({ username }) => username === 'pgquick',
+        getClearTextPassword: () => '',
       },
-      onMessage: async (data, { isAuthenticated, clientInfo }) => {
+      onStartup: onStartup,
+      onMessage: async (
+        data,
+        { isAuthenticated, clientInfo, ...otherInfo },
+      ) => {
         if (!isAuthenticated || !clientInfo) return false
 
         try {
           const dbName = clientInfo.parameters['database']
 
-          if (!dbName || !dbs[dbName]) throw new Error('Database not found.')
+          if (!dbName || !pglInstances[dbName]) {
+            await onStartup({ clientInfo, isAuthenticated, ...otherInfo })
 
-          const [[, responseData]] = await dbs[dbName].execProtocol(data)
+            if (!dbName || !pglInstances[dbName])
+              throw new Error('Database not found.')
+          }
+
+          const [[, responseData]] =
+            await pglInstances[dbName].execProtocol(data)
           connection.sendData(responseData)
         } catch (err) {
           connection.sendError(err)

@@ -8,7 +8,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   restartServer: () => ipcRenderer.send('restart-server'),
   getDatabases: () => ipcRenderer.send('get-databases'),
   createDatabase: (name: string) => ipcRenderer.invoke('create-database', name),
-  removeDatabase: (name: string) => ipcRenderer.send('remove-database', name),
+  removeDatabase: (name: string) => ipcRenderer.invoke('remove-database', name),
   onSetReady: (callback: (value: boolean) => void) =>
     ipcRenderer.on('set-ready', (_event, value: boolean) => callback(value)),
   onSetDatabases: (callback: (value: string[]) => void) =>
